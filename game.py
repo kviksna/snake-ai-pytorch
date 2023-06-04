@@ -5,8 +5,8 @@ from collections import namedtuple
 import numpy as np
 
 pygame.init()
-font = pygame.font.Font('arial.ttf', 25)
-#font = pygame.font.SysFont('arial', 25)
+# font = pygame.font.Font('arial.ttf', 25)
+# font = pygame.font.SysFont('arial', 25)
 
 class Direction(Enum):
     RIGHT = 1
@@ -23,8 +23,8 @@ BLUE1 = (0, 0, 255)
 BLUE2 = (0, 100, 255)
 BLACK = (0,0,0)
 
-BLOCK_SIZE = 20
-SPEED = 40
+BLOCK_SIZE = 20 # 20
+SPEED = 200 # 40 FPS
 
 class SnakeGameAI:
 
@@ -33,7 +33,8 @@ class SnakeGameAI:
         self.h = h
         # init display
         self.display = pygame.display.set_mode((self.w, self.h))
-        pygame.display.set_caption('Snake')
+        # pygame.display.set_caption('Snake')
+        pygame.display.set_caption('Snake (score:  )')
         self.clock = pygame.time.Clock()
         self.reset()
 
@@ -91,7 +92,7 @@ class SnakeGameAI:
         
         # 5. update ui and clock
         self._update_ui()
-        self.clock.tick(SPEED)
+        self.clock.tick(SPEED) # FPS
         # 6. return game over and score
         return reward, game_over, self.score
 
@@ -118,9 +119,10 @@ class SnakeGameAI:
 
         pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
 
-        text = font.render("Score: " + str(self.score), True, WHITE)
-        self.display.blit(text, [0, 0])
+        # text = font.render("Score: " + str(self.score), True, WHITE)
+        # self.display.blit(text, [0, 0])
         pygame.display.flip()
+        pygame.display.set_caption('Snake (score: ' + str(self.score) + ' )')
 
 
     def _move(self, action):

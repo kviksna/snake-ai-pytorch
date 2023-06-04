@@ -5,6 +5,7 @@ from collections import deque
 from game import SnakeGameAI, Direction, Point
 from model import Linear_QNet, QTrainer
 from helper import plot
+import datetime
 
 MAX_MEMORY = 100_000
 BATCH_SIZE = 1000
@@ -101,6 +102,7 @@ class Agent:
 
 
 def train():
+    start_time = datetime.datetime.now()
     plot_scores = []
     plot_mean_scores = []
     total_score = 0
@@ -134,13 +136,22 @@ def train():
                 record = score
                 agent.model.save()
 
-            print('Game', agent.n_games, 'Score', score, 'Record:', record)
+            end_time = datetime.datetime.now()
+            elapsed_time = end_time - start_time
+            days = elapsed_time.days
+            hours = elapsed_time.seconds // 3600
+            minutes = (elapsed_time.seconds % 3600) // 60
+            seconds = elapsed_time.seconds % 60
+            #print("Elapsed time: {} days, {} hours, {} minutes, {} seconds".format(days, hours, minutes, seconds))
+
+            #print('Game', agent.n_games, 'Score', score, 'Record:', record)
+            print('#', agent.n_games, ' ', score, ' / ', record, "    Elapsed time: {} d, {}:{}.{}".format(days, hours, minutes, seconds))
 
             plot_scores.append(score)
             total_score += score
             mean_score = total_score / agent.n_games
             plot_mean_scores.append(mean_score)
-            plot(plot_scores, plot_mean_scores)
+            plot(plot_scores, plot_mean_scores) # prints: "Figure(X x Y)"
 
 
 if __name__ == '__main__':
