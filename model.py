@@ -23,6 +23,10 @@ class Linear_QNet(nn.Module):
         file_name = os.path.join(model_folder_path, file_name)
         torch.save(self.state_dict(), file_name)
 
+        # Export self.state_dict()
+        with open('./model/state_dict.py', 'w') as file:
+            file.write(f'self.state_dict = {self.state_dict()}\n')
+
 
 class QTrainer:
     def __init__(self, model, lr, gamma):

@@ -7,17 +7,17 @@ from model import Linear_QNet, QTrainer
 from helper import plot
 import datetime
 
-MAX_MEMORY = 100_000
+MAX_MEMORY = 100_000 #Maximum length of the replay memory buffer
 BATCH_SIZE = 1000
-LR = 0.001
+LR = 0.001 # 0.001
 
 class Agent:
 
     def __init__(self):
         self.n_games = 0
-        self.epsilon = 0 # randomness
-        self.gamma = 0.9 # discount rate
-        self.memory = deque(maxlen=MAX_MEMORY) # popleft()
+        self.epsilon = 0 # randomness, default = 0, ChatGPT sample = 0.2
+        self.gamma = 0.9 # 0.9, discount rate [0..1] [immediate..future]-reward focus
+        self.memory = deque(maxlen=MAX_MEMORY) # popleft(), FIFO
         self.model = Linear_QNet(11, 256, 3)
         self.trainer = QTrainer(self.model, lr=LR, gamma=self.gamma)
 
@@ -145,13 +145,22 @@ def train():
             #print("Elapsed time: {} days, {} hours, {} minutes, {} seconds".format(days, hours, minutes, seconds))
 
             #print('Game', agent.n_games, 'Score', score, 'Record:', record)
-            print('#', agent.n_games, ' ', score, ' / ', record, "    Elapsed time: {} d, {}:{}.{}".format(days, hours, minutes, seconds))
+            print('#', agent.n_games, ' ', score, '/', record, "   Elapsed time: {} d, {:02d}:{:02d}.{:02d}".format(days, hours, minutes, seconds))
 
             plot_scores.append(score)
             total_score += score
-            mean_score = total_score / agent.n_games
+            mean_score = round(total_score / agent.n_games,1)
             plot_mean_scores.append(mean_score)
             plot(plot_scores, plot_mean_scores) # prints: "Figure(X x Y)"
+            
+            # Export record, agent.n_games, plot_scores[], plot_mean_scores[]
+            with open('./model/vars.py', 'w') as file:
+                file.write(f'record = {record}\n')
+                file.write(f'agent.n_games = {agent.n_games}\n')
+                
+                #Dump thease, eats up disk/mem/graph!
+                #file.write(f'plot_scores = {plot_scores}\n')
+                #file.write(f'plot_mean_scores = {plot_mean_scores}\n')
 
 
 if __name__ == '__main__':
